@@ -1,4 +1,4 @@
-# minipage
+# minibook
 
 A Python tool for creating 8-page mini-book (zine) impositions from PDFs. Print one sheet front and back, fold, and you have an 8-page booklet.
 
@@ -13,7 +13,7 @@ pip install pypdf
 ## Usage
 
 ```bash
-python3 minipage.py INPUT.pdf OUTPUT.pdf [--flip EDGE] [--margin SIZE]
+python3 minibook.py INPUT.pdf OUTPUT.pdf [--flip EDGE] [--margin SIZE]
 ```
 
 ### Arguments
@@ -32,17 +32,17 @@ python3 minipage.py INPUT.pdf OUTPUT.pdf [--flip EDGE] [--margin SIZE]
 
 Basic usage with default long-edge flip:
 ```bash
-python3 minipage.py input.pdf output.pdf
+python3 minibook.py input.pdf output.pdf
 ```
 
 Make content bigger by cropping 18pt from edges:
 ```bash
-python3 minipage.py input.pdf output.pdf --margin -18
+python3 minibook.py input.pdf output.pdf --margin -18
 ```
 
 Short-edge duplex with 12pt margins:
 ```bash
-python3 minipage.py input.pdf output.pdf --flip short --margin 12
+python3 minibook.py input.pdf output.pdf --flip short --margin 12
 ```
 
 ## Printing
