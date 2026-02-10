@@ -545,9 +545,9 @@
         async function loadExample() {
             try {
                 showStatus('Loading example PDF...', 'info');
-                const response = await fetch('source.pdf');
+                const response = await fetch('magi.pdf');
                 const blob = await response.blob();
-                const file = new File([blob], 'source.pdf', { type: 'application/pdf' });
+                const file = new File([blob], 'magi.pdf', { type: 'application/pdf' });
                 handleFile(file);
                 hideStatus();
             } catch (error) {
