@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minibook - 8-Page Zine Fold Imposition</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .instructions-diagram {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .instructions-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .instructions-header:hover {
+            background: #e9ecef;
+        }
+
+        .instructions-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #495057;
+        }
+
+        .instructions-toggle {
+            font-size: 20px;
+            color: #6c757d;
+            transition: transform 0.3s;
+        }
+
+        .instructions-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .instructions-content {
+            padding: 0 20px 20px 20px;
+            display: none;
+        }
+
+        .instructions-content.show {
+            display: block;
+        }
+
+        .instructions-diagram img {
+            width: 100%;
+            max-width: 700px;
+            display: block;
+            margin: 0 auto 15px auto;
+            border-radius: 4px;
+        }
+
+        .instructions-diagram ol {
+            margin: 15px 0 0 20px;
+            font-size: 13px;
+            color: #495057;
+            line-height: 1.8;
+        }
+
+        .instructions-credit {
+            margin-top: 15px;
+            font-size: 12px;
+            color: #6c757d;
+            font-style: italic;
+        }
+
+        .instructions-credit a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        .instructions-credit a:hover {
+            text-decoration: underline;
+        }
+
+        .usage-guide {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .usage-guide-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .usage-guide-header:hover {
+            background: #f8f9fa;
+        }
+
+        .usage-guide-header h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .usage-guide-toggle {
+            font-size: 20px;
+            color: #6c757d;
+            transition: transform 0.3s;
+        }
+
+        .usage-guide-toggle.open {
+            transform: rotate(180deg);
+        }
+
+        .usage-guide-content {
+            padding: 0 20px 20px 20px;
+            display: none;
+        }
+
+        .usage-guide-content.show {
+            display: block;
+        }
+
+        .usage-guide h4 {
+            margin: 20px 0 10px 0;
+            font-size: 15px;
+            color: #495057;
+        }
+
+        .usage-guide h4:first-of-type {
+            margin-top: 0;
+        }
+
+        .usage-guide p {
+            margin: 0 0 10px 0;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .usage-guide ul {
+            margin: 10px 0 15px 20px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .usage-guide strong {
+            color: #333;
+        }
+
+        .usage-guide code {
+            background: #f1f3f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #e83e8c;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .file-dropzone {
+            position: relative;
+            width: 100%;
+            padding: 30px;
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            background: #fafafa;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .file-dropzone:hover {
+            border-color: #999;
+            background: #f0f0f0;
+        }
+
+        .file-dropzone.drag-over {
+            border-color: #007bff;
+            background: #e7f3ff;
+        }
+
+        .file-dropzone input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .dropzone-text {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .dropzone-text strong {
+            color: #333;
+            display: block;
+            margin-bottom: 5px;
+            font-size: 15px;
+        }
+
+        .dropzone-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            opacity: 0.5;
+        }
+
+        .example-link {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .example-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .example-link a:hover {
+            text-decoration: underline;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.2s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #0056b3;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .help-text {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+            font-style: italic;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        #status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        #status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        #status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        #pdfPreview {
+            display: none;
+            margin-top: 30px;
+        }
+
+        #pdfPreview iframe {
+            width: 100%;
+            height: 600px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        #downloadBtn {
+            margin-top: 15px;
+            background: #28a745;
+        }
+
+        #downloadBtn:hover {
+            background: #218838;
+        }
+
+        .preview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .preview-header h2 {
+            margin: 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #856404;
+        }
+
+        .instructions strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+
+        canvas {
+            display: none;
+        }
+
+        footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        footer a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>One-page mini-zine creator</h1>
+        <p class="subtitle">Transform your PDF into an 8-page booklet from one sheet, printed on one side. Print, fold, cut – done!</p>
+
+        <div class="instructions-diagram">
+            <div class="instructions-header" onclick="toggleInstructions()">
+                <h3>📖 How to fold your zine</h3>
+                <span class="instructions-toggle open">▼</span>
+            </div>
+            <div class="instructions-content show" id="foldingInstructions">
+                <img src="instructions.jpg" alt="Step-by-step folding instructions for creating an 8-page mini-zine">
+                <ol>
+                    <li>Print the single-page PDF on one side of a sheet</li>
+                    <li>Fold the paper in half lengthwise (hotdog fold)</li>
+                    <li>Fold in half again, then once more (you'll have 8 sections)</li>
+                    <li>Unfold once so you see 4 sections</li>
+                    <li>Cut along the center fold between the two middle sections</li>
+                    <li>Unfold completely, fold lengthwise, and push the ends together - it will twist into a booklet!</li>
+                </ol>
+                <p class="instructions-credit">
+                    Folding diagram and technique by <a href="https://marekbennett.com/2020/01/24/1sheet-mini-01/" target="_blank" rel="noopener">Marek Bennett</a>
+                </p>
+            </div>
+        </div>
+
+        <div class="usage-guide">
+            <div class="usage-guide-header" onclick="toggleUsageGuide()">
+                <h3>How to use this tool</h3>
+                <span class="usage-guide-toggle">▼</span>
+            </div>
+            <div class="usage-guide-content" id="usageGuideContent">
+                <h4>📄 What does this do?</h4>
+            <p>This tool takes your PDF (up to 8 pages) and rearranges it into a special layout that, when printed on one side and folded, becomes an 8-page booklet from a single sheet of paper. Perfect for zines, mini-comics, poetry chapbooks, or any small publication!</p>
+
+            <h4>📤 Step 1: Upload your PDF</h4>
+            <p>Select a PDF file with 1-8 pages. Each page will become one panel in your mini-zine. If you have fewer than 8 pages, the remaining pages will be blank.</p>
+
+            <h4>⚙️ Step 2: Configure margin</h4>
+            <p><strong>Margin</strong> – Controls spacing and sizing:</p>
+            <ul>
+                <li><strong>Positive values</strong> (e.g., <code>18</code>) – Adds white space around the edges. Use for safety margins</li>
+                <li><strong>Negative values</strong> (e.g., <code>-18</code>) – Makes content bigger by cropping edges. Good for full-bleed or text-heavy pages</li>
+                <li><strong>Zero</strong> (<code>0</code>) – No margin, content fills each panel exactly</li>
+            </ul>
+
+            <h4>🖨️ Step 3: Print</h4>
+            <p>After processing, you'll see a single-page PDF. Print settings:</p>
+            <ul>
+                <li>Print in <strong>LANDSCAPE</strong> orientation</li>
+                <li>Use <strong>100% scale</strong> or "Actual Size" (NOT "Fit to Page")</li>
+                <li>Print <strong>single-sided</strong> (one side only)</li>
+                <li>Use standard <strong>US Letter</strong> size paper (8.5" × 11")</li>
+            </ul>
+
+            <h4>✂️ Step 4: Fold and cut</h4>
+            <p>Follow the diagram above to fold and cut your printed sheet into a booklet. The magic happens when you push the folded ends together!</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <label for="pdfInput">Upload your PDF (up to 8 pages):</label>
+            <div class="file-dropzone" id="dropzone">
+                <div class="dropzone-icon">📄</div>
+                <div class="dropzone-text">
+                    <strong>Drop PDF here or click to browse</strong>
+                    Maximum 8 pages • Output is one page to print on one side
+                </div>
+                <input type="file" id="pdfInput" accept=".pdf">
+            </div>
+            <div class="example-link">
+                <a onclick="loadExample()">📖 Try with example PDF</a>
+            </div>
+        </div>
+
+        <div class="section">
+            <label for="margin">Margin (points):</label>
+            <input type="number" id="margin" value="-18" step="1">
+            <p class="help-text">≥0: outer margin, &lt;0: crop & enlarge</p>
+        </div>
+
+        <div class="section">
+            <button id="processBtn" disabled>Process PDF</button>
+        </div>
+
+        <div id="status"></div>
+
+        <div id="pdfPreview">
+            <div class="preview-header">
+                <h2>Preview</h2>
+            </div>
+            <iframe id="pdfFrame"></iframe>
+            <button id="downloadBtn">Download PDF</button>
+            <div class="instructions">
+                <strong>Printing Instructions:</strong>
+                Print LANDSCAPE at 100% scale (actual size, no fit-to-page). Print single-sided only.
+            </div>
+        </div>
+
+        <footer>
+            <p>Free and open-source tool for creating mini-zines. Works entirely in your browser – no upload, no tracking.</p>
+            <p>Based on the classic 8-page one-cut zine folding technique. Print on one side only!</p>
+        </footer>
+    </div>
+
+    <canvas id="canvas"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
+
+        const { PDFDocument, degrees, rgb } = PDFLib;
+
+        const LETTER_LANDSCAPE = { width: 11 * 72, height: 8.5 * 72 };
+
+        let pdfFile = null;
+        let currentPdfUrl = null;
+
+        function toggleInstructions() {
+            const content = document.getElementById('foldingInstructions');
+            const toggle = document.querySelector('.instructions-toggle');
+            content.classList.toggle('show');
+            toggle.classList.toggle('open');
+        }
+
+        function toggleUsageGuide() {
+            const content = document.getElementById('usageGuideContent');
+            const toggle = document.querySelector('.usage-guide-toggle');
+            content.classList.toggle('show');
+            toggle.classList.toggle('open');
+        }
+
+        async function loadExample() {
+            try {
+                showStatus('Loading example PDF...', 'info');
+                const response = await fetch('source.pdf');
+                const blob = await response.blob();
+                const file = new File([blob], 'source.pdf', { type: 'application/pdf' });
+                handleFile(file);
+                hideStatus();
+            } catch (error) {
+                showStatus('Failed to load example PDF', 'error');
+                console.error(error);
+            }
+        }
+
+        // File input handling
+        const fileInput = document.getElementById('pdfInput');
+        const dropzone = document.getElementById('dropzone');
+
+        function handleFile(file) {
+            if (file && file.type === 'application/pdf') {
+                pdfFile = file;
+                document.getElementById('processBtn').disabled = false;
+                hideStatus();
+                document.getElementById('pdfPreview').style.display = 'none';
+
+                // Clean up previous PDF URL
+                if (currentPdfUrl) {
+                    URL.revokeObjectURL(currentPdfUrl);
+                    currentPdfUrl = null;
+                }
+
+                // Update dropzone text
+                document.querySelector('.dropzone-text strong').textContent = `Selected: ${file.name}`;
+            } else {
+                showStatus('Please select a valid PDF file', 'error');
+            }
+        }
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files[0]) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        // Drag and drop handlers
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.add('drag-over');
+        });
+
+        dropzone.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('drag-over');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            dropzone.classList.remove('drag-over');
+
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+                // Update the file input
+                fileInput.files = files;
+            }
+        });
+
+        document.getElementById('processBtn').addEventListener('click', processPDF);
+
+        document.getElementById('downloadBtn').addEventListener('click', () => {
+            if (currentPdfUrl) {
+                const a = document.createElement('a');
+                a.href = currentPdfUrl;
+                a.download = 'minibook-output.pdf';
+                a.click();
+            }
+        });
+
+        function showStatus(message, type = 'info') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = type;
+            status.style.display = 'block';
+        }
+
+        function hideStatus() {
+            document.getElementById('status').style.display = 'none';
+        }
+
+        function getLayoutForFlip(flip) {
+            const front = [
+                { pageNum: 8, col: 0, row: 0, rotate180: true },
+                { pageNum: 1, col: 1, row: 0, rotate180: true },
+                { pageNum: 2, col: 2, row: 0, rotate180: true },
+                { pageNum: 7, col: 3, row: 0, rotate180: true },
+                { pageNum: 6, col: 0, row: 1, rotate180: false },
+                { pageNum: 3, col: 1, row: 1, rotate180: false },
+                { pageNum: 4, col: 2, row: 1, rotate180: false },
+                { pageNum: 5, col: 3, row: 1, rotate180: false },
+            ];
+
+            const backShort = [
+                { pageNum: 5, col: 0, row: 0, rotate180: true },
+                { pageNum: 4, col: 1, row: 0, rotate180: true },
+                { pageNum: 3, col: 2, row: 0, rotate180: true },
+                { pageNum: 6, col: 3, row: 0, rotate180: true },
+                { pageNum: 7, col: 0, row: 1, rotate180: false },
+                { pageNum: 2, col: 1, row: 1, rotate180: false },
+                { pageNum: 1, col: 2, row: 1, rotate180: false },
+                { pageNum: 8, col: 3, row: 1, rotate180: false },
+            ];
+
+            if (flip === 'short' || flip === 'none') {
+                return { front, back: backShort };
+            }
+
+            const backLong = [
+                { pageNum: 7, col: 0, row: 0, rotate180: true },
+                { pageNum: 2, col: 1, row: 0, rotate180: true },
+                { pageNum: 1, col: 2, row: 0, rotate180: true },
+                { pageNum: 8, col: 3, row: 0, rotate180: true },
+                { pageNum: 5, col: 0, row: 1, rotate180: false },
+                { pageNum: 4, col: 1, row: 1, rotate180: false },
+                { pageNum: 3, col: 2, row: 1, rotate180: false },
+                { pageNum: 6, col: 3, row: 1, rotate180: false },
+            ];
+
+            return { front, back: backLong };
+        }
+
+        async function renderPageToImage(pdfDoc, pageNum, scale = 3) {
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale });
+
+            const canvas = document.getElementById('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            await page.render({ canvasContext: context, viewport }).promise;
+
+            // Return both the image data and original page dimensions
+            const origViewport = page.getViewport({ scale: 1 });
+            return {
+                imgData: canvas.toDataURL('image/png'),
+                width: origViewport.width,
+                height: origViewport.height
+            };
+        }
+
+        async function processPDF() {
+            try {
+                showStatus('Processing PDF...', 'info');
+                document.getElementById('processBtn').disabled = true;
+
+                const margin = parseFloat(document.getElementById('margin').value);
+
+                const arrayBuffer = await pdfFile.arrayBuffer();
+                const loadingTask = pdfjsLib.getDocument({ data: arrayBuffer });
+                const pdfDoc = await loadingTask.promise;
+                const pageCount = pdfDoc.numPages;
+
+                if (pageCount === 0) {
+                    throw new Error('Input PDF has 0 pages.');
+                }
+                if (pageCount > 8) {
+                    throw new Error(`Input has ${pageCount} pages; this layout supports up to 8.`);
+                }
+
+                // Calculate margin/crop/bleed
+                let outerMargin, crop, bleed;
+                if (margin >= 0) {
+                    outerMargin = margin;
+                    crop = 0;
+                    bleed = 0;
+                } else {
+                    outerMargin = 0;
+                    crop = -margin;
+                    bleed = -margin;
+                }
+
+                // Use front layout only
+                const { front } = getLayoutForFlip('long');
+
+                // Create output PDF
+                const outDoc = await PDFDocument.create();
+
+                // Mapping logical booklet page to source page index
+                const LOGICAL_TO_SOURCE = { 1: 8, 2: 7, 3: 3, 4: 4, 5: 5, 6: 2, 7: 6, 8: 1 };
+
+                // Render pages to images
+                showStatus('Rendering pages...', 'info');
+                const pageData = [];
+                for (let i = 1; i <= pageCount; i++) {
+                    const data = await renderPageToImage(pdfDoc, i);
+                    pageData.push(data);
+                }
+
+                // Build single sheet
+                showStatus('Building page...', 'info');
+                await buildSheet(outDoc, pageData, front, LOGICAL_TO_SOURCE, outerMargin, crop, bleed, pageCount);
+
+                // Save and display
+                showStatus('Saving PDF...', 'info');
+                const pdfBytes = await outDoc.save();
+                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+
+                // Clean up previous URL
+                if (currentPdfUrl) {
+                    URL.revokeObjectURL(currentPdfUrl);
+                }
+
+                currentPdfUrl = URL.createObjectURL(blob);
+
+                // Display PDF in iframe
+                document.getElementById('pdfFrame').src = currentPdfUrl;
+                document.getElementById('pdfPreview').style.display = 'block';
+
+                hideStatus();
+
+                // Scroll to preview
+                document.getElementById('pdfPreview').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                console.error(error);
+            } finally {
+                document.getElementById('processBtn').disabled = false;
+            }
+        }
+
+        async function buildSheet(outDoc, pageData, placements, LOGICAL_TO_SOURCE, outerMargin, crop, bleed, pageCount) {
+            const sheet = outDoc.addPage([LETTER_LANDSCAPE.width, LETTER_LANDSCAPE.height]);
+
+            const usableW = LETTER_LANDSCAPE.width - 2 * outerMargin;
+            const usableH = LETTER_LANDSCAPE.height - 2 * outerMargin;
+            const cellW = usableW / 4;
+            const cellH = usableH / 2;
+
+            for (const pl of placements) {
+                const srcIndex = LOGICAL_TO_SOURCE[pl.pageNum] - 1;
+                if (srcIndex >= pageCount) {
+                    continue; // leave blank
+                }
+
+                const { imgData, width: srcW, height: srcH } = pageData[srcIndex];
+                const pngImage = await outDoc.embedPng(imgData);
+
+                // Apply crop to dimensions
+                let effectiveSrcW = srcW;
+                let effectiveSrcH = srcH;
+                if (crop > 0) {
+                    effectiveSrcW = Math.max(0, srcW - 2 * crop);
+                    effectiveSrcH = Math.max(0, srcH - 2 * crop);
+                }
+
+                // Fit to (cell + 2*bleed)
+                const targetW = cellW + 2 * bleed;
+                const targetH = cellH + 2 * bleed;
+                const scale = Math.min(targetW / effectiveSrcW, targetH / effectiveSrcH);
+
+                const placedW = effectiveSrcW * scale;
+                const placedH = effectiveSrcH * scale;
+
+                const x0 = outerMargin + pl.col * cellW;
+                const y0 = outerMargin + (1 - pl.row) * cellH; // row 0 is top
+
+                // Center in cell
+                const centerX = x0 + cellW / 2;
+                const centerY = y0 + cellH / 2;
+
+                // Draw image - pdf-lib draws from bottom-left corner
+                const imgX = centerX - placedW / 2;
+                const imgY = centerY - placedH / 2;
+
+                if (pl.rotate180) {
+                    // For 180° rotation, pdf-lib rotates around center
+                    // So we need to position at the opposite corner
+                    sheet.drawImage(pngImage, {
+                        x: centerX + placedW / 2,
+                        y: centerY + placedH / 2,
+                        width: placedW,
+                        height: placedH,
+                        rotate: degrees(180),
+                    });
+                } else {
+                    sheet.drawImage(pngImage, {
+                        x: imgX,
+                        y: imgY,
+                        width: placedW,
+                        height: placedH,
+                    });
+                }
+            }
+        }
+    </script>
+</body>
+</html>
